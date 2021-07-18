@@ -1,4 +1,5 @@
 import argparse
+import os
 import subprocess
 from pathlib import Path
 
@@ -42,6 +43,10 @@ def convert(args):
         subprocess.run(["ffmpeg", "-i", src_file.as_posix(), targ_file.as_posix()],)
         num_converted += 1
 
+        # Remove the source file
+        if args.delete_src:
+            os.remove(src_file)
+
     print(f"Done! {num_converted} files converted. 🎉")
 
 
@@ -57,6 +62,13 @@ def main():
     )
     parser.add_argument(
         "--format", type=str, default="mp3", help="Target format. Default: .mp3"
+    )
+    parser.add_argument(
+        "-d",
+        "--delete_src",
+        type=bool,
+        action="store_true",
+        help="If True, delete source files after conversion",
     )
     args = parser.parse_args()
     convert(args)

@@ -13,3 +13,5 @@ Supported source format: `.m4a`, `.wav` (more to be tested)
 - Convert all files in the current directory: `audioconverter`
 - Convert all files in specified directory: `audioconverter -i path/to/src/directory`
 - Convert a specific file: `audioconverter -i path/to/src/file.wav`
+- Convert to specific format: `audioconverter --format mp3`
+- Delete source files after conversion: `audioconverter -d`
