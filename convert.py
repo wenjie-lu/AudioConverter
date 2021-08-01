@@ -29,7 +29,7 @@ def convert(args):
         ), f"Source format {src_dir.suffix} not supported!"
     else:
         for format in SUPPORTED_FORMAT:
-            src_files.append(list(Path.glob(src_dir, f"*.{format}")))
+            src_files.extend(list(Path.rglob(src_dir, f"*.{format}")))
 
     # Conversion
     num_converted = 0
@@ -66,7 +66,6 @@ def main():
     parser.add_argument(
         "-d",
         "--delete_src",
-        type=bool,
         action="store_true",
         help="If True, delete source files after conversion",
     )
