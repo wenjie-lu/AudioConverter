@@ -1,10 +1,11 @@
 import argparse
+from ast import arg
 import os
 import subprocess
 from pathlib import Path
 
 
-SUPPORTED_FORMAT = ["wav", "m4a"]
+SUPPORTED_FORMAT = ["mp4"]
 
 
 def check_ffmpeg():
@@ -34,13 +35,33 @@ def convert(args):
     # Conversion
     num_converted = 0
     for src_file in src_files:
-        targ_file = src_file.with_suffix(f".{args.format}")
+
+        if args.format == src_file.suffix[1:]:
+            targ_file = src_file.with_stem(src_file.stem + "_1")
+        else:
+            targ_file = src_file.with_suffix(f".{args.format}")
+
         if targ_file.exists():
             print(f"Target existed. Skip {src_file.name}")
             continue
 
         print(f"===== Converting {src_file.name}... =====")
-        subprocess.run(["ffmpeg", "-i", src_file.as_posix(), targ_file.as_posix()],)
+        cmd = [
+            "ffmpeg",
+            "-i",
+            src_file.as_posix(),
+            # "-vf",
+            # f"scale=-1:{args.res:d}",
+            "-c:v",
+            "libx264",
+            "-crf",
+            "18",
+            "-c:a",
+            "copy",
+            targ_file.as_posix(),
+        ]
+        print(" ".join(cmd))
+        subprocess.run(cmd)
         num_converted += 1
 
         # Remove the source file
@@ -61,8 +82,11 @@ def main():
         help="Input directory or file. Default: the current directory",
     )
     parser.add_argument(
-        "--format", type=str, default="mp3", help="Target format. Default: .mp3"
+        "--format", type=str, default="mp4", help="Target format. Default: .mp4"
     )
+    # parser.add_argument(
+    #     "--res", type=int, default=720, help="target resolutoin. Default: 720"
+    # )
     parser.add_argument(
         "-d",
         "--delete_src",

@@ -25,5 +25,10 @@ setup(
     package_dir={"": "."},
     install_requires=install_requires,
     python_requires=">=3.7",
-    entry_points={"console_scripts": ["audioconverter=convert:main"]},
+    entry_points={
+        "console_scripts": [
+            "converta=convert_audio:main",
+            "convertv=convert_video:main",
+        ]
+    },
 )
